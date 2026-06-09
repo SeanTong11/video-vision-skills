@@ -34,7 +34,8 @@ script.
    ```
 
    The script prints JSON containing metadata, sidecar subtitle segments if
-   available, and extracted frame image paths.
+   available, and extracted frame image paths. By default, it writes extracted
+   evidence under `.video-perception/<video-name>-<timestamp>/`.
 
 4. Inspect frames from the script output.
    - For short videos, inspect an evenly distributed sample of the extracted
@@ -75,6 +76,6 @@ script.
 ## Constraints
 
 - Keep extraction small at first; drill into specific moments only when needed.
-- Do not create persistent project files from extracted frames unless the user
-  asks. The helper defaults to a temporary output directory.
+- Store extracted frames under `.video-perception/` by default so they are easy
+  to inspect and manually clear later.
 - Keep the workflow local to the skill files and bundled helper script.

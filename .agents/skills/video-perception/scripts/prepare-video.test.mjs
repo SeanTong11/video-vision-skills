@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import test from "node:test";
 
 import {
+  buildDefaultOutputDir,
   calculateAutoFps,
   findSidecarSubtitle,
   parseSubtitleContent,
@@ -46,4 +47,16 @@ test("calculateAutoFps uses lower sampling for longer videos", () => {
   assert.equal(calculateAutoFps(600), 0.5);
   assert.equal(calculateAutoFps(1800), 0.2);
   assert.equal(calculateAutoFps(7200), 0.1);
+});
+
+test("buildDefaultOutputDir stores generated evidence under a hidden folder", () => {
+  const dir = mkdtempSync(join(tmpdir(), "codex-video-skill-"));
+  try {
+    assert.equal(
+      buildDefaultOutputDir(join(dir, "my demo.mp4"), 12345, dir),
+      join(dir, ".video-perception", "my-demo-12345"),
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

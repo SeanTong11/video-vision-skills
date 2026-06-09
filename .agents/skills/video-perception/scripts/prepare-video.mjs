@@ -6,10 +6,8 @@ import {
   readFileSync,
   readdirSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
 import {
   basename,
-  dirname,
   extname,
   join,
   parse,
@@ -100,6 +98,18 @@ export function findSidecarSubtitle(videoPath) {
   const parsed = parse(resolve(videoPath));
   const candidate = join(parsed.dir, `${parsed.name}.srt`);
   return existsSync(candidate) ? candidate : null;
+}
+
+function safeName(value) {
+  return value
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    || "video";
+}
+
+export function buildDefaultOutputDir(videoPath, timestamp = Date.now(), cwd = process.cwd()) {
+  const stem = safeName(basename(videoPath, extname(videoPath)));
+  return join(cwd, ".video-perception", `${stem}-${timestamp}`);
 }
 
 function loadSidecarTranscript(videoPath) {
@@ -239,10 +249,9 @@ async function main() {
     throw new Error("--fps must be 'auto' or a positive number");
   }
 
-  const stem = basename(args.path, extname(args.path));
   const rootOutputDir = args.out
     ? resolve(args.out)
-    : join(tmpdir(), `codex-video-vision-${stem}-${Date.now()}`);
+    : buildDefaultOutputDir(args.path);
   const framesDir = join(rootOutputDir, "frames");
 
   const transcript = args.transcript === "none"
