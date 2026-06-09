@@ -1,12 +1,12 @@
 ---
 name: video-perception
-description: Use when the user asks Codex to watch, inspect, summarize, or analyze a local video file, especially when a same-basename .srt subtitle file should be used instead of Whisper. This is a skill-only workflow and does not require MCP tools.
+description: Use when the user asks Codex to watch, inspect, summarize, or analyze a local video file, especially when a same-basename .srt subtitle file should be used instead of Whisper.
 ---
 
 # Video Perception
 
-Use this skill to analyze videos with local shell tools only. Do not rely on
-`video_watch`, `video_analyze`, or other MCP tools for this workflow.
+Use this skill to analyze videos with local shell tools and the bundled helper
+script.
 
 ## Workflow
 
@@ -44,10 +44,22 @@ Use this skill to analyze videos with local shell tools only. Do not rely on
    - Increase `--resolution` to 768 or 1024 when reading on-screen text.
 
 5. Answer from evidence.
-   - Combine frame observations with sidecar subtitle content.
+   - Combine timestamped frame observations with sidecar subtitle content.
    - Mention when there was no sidecar subtitle and the answer is visual-only.
    - If the user asks for exact speech but no `.srt` exists, explain that this
-     skill-only path does not transcribe audio by default.
+     workflow does not transcribe audio by default.
+
+## Time Citation Rules
+
+- Every claim about video content must cite a timestamp or time range.
+- Cite the nearest frame timestamp for visual observations, such as cursor
+  position, chart state, slide content, gestures, or scene changes.
+- Cite subtitle segment timestamps for spoken content.
+- If a visual event occurs between sampled frames, cite the narrowest observed
+  range, for example `[00:43:45-00:43:49]`.
+- Do not write statements like "his mouse points at this candle" without saying
+  when it happens.
+- Prefer compact inline citations: `[00:43:48]`, `[00:43:38-00:43:58]`.
 
 ## Helper Options
 
@@ -65,4 +77,4 @@ Use this skill to analyze videos with local shell tools only. Do not rely on
 - Keep extraction small at first; drill into specific moments only when needed.
 - Do not create persistent project files from extracted frames unless the user
   asks. The helper defaults to a temporary output directory.
-- Do not modify MCP server code for skill-only tasks.
+- Keep the workflow local to the skill files and bundled helper script.
