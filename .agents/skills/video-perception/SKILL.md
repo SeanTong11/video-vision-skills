@@ -1,6 +1,6 @@
 ---
 name: video-perception
-description: Use when the user asks Codex to watch, inspect, summarize, or analyze a local video file, especially when a same-basename .srt subtitle file should be used instead of Whisper.
+description: Use when the user asks Codex to watch, inspect, summarize, or analyze a local video file, especially when same-basename .srt or .vtt subtitles should be used instead of Whisper.
 ---
 
 # Video Perception
@@ -16,7 +16,8 @@ script.
      the downloaded local file.
 
 2. Prefer same-basename subtitles over audio transcription.
-   - For `demo.mp4`, look for `demo.srt` in the same directory.
+   - For `demo.mp4`, look for `demo.srt` first, then `demo.vtt` in the same
+     directory.
    - If it exists, treat it as the transcript source.
    - If it does not exist, continue with visual analysis and say that no sidecar
      subtitles were found.
@@ -47,8 +48,8 @@ script.
 5. Answer from evidence.
    - Combine timestamped frame observations with sidecar subtitle content.
    - Mention when there was no sidecar subtitle and the answer is visual-only.
-   - If the user asks for exact speech but no `.srt` exists, explain that this
-     workflow does not transcribe audio by default.
+   - If the user asks for exact speech but no `.srt` or `.vtt` exists, explain
+     that this workflow does not transcribe audio by default.
 
 ## Time Citation Rules
 
@@ -64,7 +65,7 @@ script.
 
 ## Helper Options
 
-- `--transcript auto`: read same-basename `.srt` when present.
+- `--transcript auto`: read same-basename `.srt` or `.vtt` when present.
 - `--transcript sidecar`: require sidecar subtitle behavior, but still does not
   fall back to Whisper.
 - `--transcript none`: skip subtitle lookup.

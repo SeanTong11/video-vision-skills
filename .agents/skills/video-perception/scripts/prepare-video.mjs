@@ -96,8 +96,11 @@ export function parseSubtitleContent(raw) {
 
 export function findSidecarSubtitle(videoPath) {
   const parsed = parse(resolve(videoPath));
-  const candidate = join(parsed.dir, `${parsed.name}.srt`);
-  return existsSync(candidate) ? candidate : null;
+  const candidates = [
+    join(parsed.dir, `${parsed.name}.srt`),
+    join(parsed.dir, `${parsed.name}.vtt`),
+  ];
+  return candidates.find((candidate) => existsSync(candidate)) ?? null;
 }
 
 function safeName(value) {
@@ -119,12 +122,16 @@ function loadSidecarTranscript(videoPath) {
       source: "none",
       path: null,
       segments: [],
-      warning: `No same-basename .srt file found next to ${basename(videoPath)}`,
+      warning: `No same-basename .srt or .vtt file found next to ${basename(videoPath)}`,
     };
   }
 
+  const source = extname(subtitlePath).toLowerCase() === ".vtt"
+    ? "sidecar-vtt"
+    : "sidecar-srt";
+
   return {
-    source: "sidecar-srt",
+    source,
     path: subtitlePath,
     segments: parseSubtitleContent(readFileSync(subtitlePath, "utf8")),
   };
